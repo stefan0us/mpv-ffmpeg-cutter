@@ -67,6 +67,19 @@ def start_all_cut(workdir: str, file_timestamp_map: dict, skip: bool):
                 raise subprocess.CalledProcessError(p.returncode, ffmpeg_cmd)
 
 
+def spawn_mpv_window(workdir, input_file_path):
+    mpv_option_str = option_dict_to_str(
+        {
+            '--screenshot-template': f"\"{os.path.join(workdir, SCREENSHOT_DIR_NAME, r'%f_%wf')}\""
+        },
+        preset_option_dict=MPV_PRESET_OPTIONS,
+        connect_symbol='='
+    )
+    mpv_cmd = f'mpv {mpv_option_str} "{input_file_path}"'
+    print(mpv_cmd)
+    subprocess.check_call(mpv_cmd, shell=True)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--workdir', help='working directory.', type=str)
@@ -86,16 +99,7 @@ def main():
     if input_file_path:
         if not os.path.isfile(input_file_path):
             raise Exception('intput file is not a file.')
-        mpv_option_str = option_dict_to_str(
-            {
-                '--screenshot-template': f"\"{os.path.join(workdir, SCREENSHOT_DIR_NAME, r'%f_%wf')}\""
-            },
-            preset_option_dict=MPV_PRESET_OPTIONS,
-            connect_symbol='='
-        )
-        mpv_cmd = f'mpv {mpv_option_str} "{input_file_path}"'
-        print(mpv_cmd)
-        subprocess.check_call(mpv_cmd, shell=True)
+        spawn_mpv_window(workdir, input_file_path)
     if not skip:
         input('continue to process.')
     file_timestamp_map = create_file_timestamp_map(workdir)
