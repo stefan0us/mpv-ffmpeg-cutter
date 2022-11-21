@@ -10,7 +10,7 @@ MPV_PRESET_OPTIONS = {
     '--keep-open': 'yes'
 }
 FFMPEG_PRESET_OPTIONS = {
-    '-c:v': 'libx265',
+    '-c:v': 'hevc_nvenc',
     '-c:a': 'copy',
     '-x265-params': 'crf=25'
 }
